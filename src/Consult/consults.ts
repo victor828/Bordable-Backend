@@ -1,14 +1,14 @@
 import { pool } from "../Db/db";
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-import { user } from "../Models/users.models";
+import { boards, user } from "../Models/models";
 import { updateQuery } from "../Utils/utils";
+import { errorMessage } from "../midelware/error";
 // console.log(`(*/ω＼*)/==|==> ${JSON.stringify(data)}`);
 // console.log(`(*/ω＼*)  🦖 ${JSON.stringify(userFromBb)}`);
 // const jwtSecret = "5uper53cr3t";
 const jwtSecret = process.env["JWTSECRET"];
 
-//! admin
 class UsersConsults {
   async allUsers() {
     const consult = `SELECT * FROM users order by id`;
@@ -26,8 +26,6 @@ class UsersConsults {
 
   //* user, admin
   async getUser(user_id: string) {
-    console.log(`(*/ω＼*)/==|==> ${user_id}`);
-
     const consult = `SELECT * FROM users WHERE id = $1`;
     try {
       const result = await pool.query(consult, [user_id]);
@@ -128,7 +126,6 @@ class UsersConsults {
     try {
       const res = await pool.query(consult, values);
 
-
       return res.rows[0];
     } catch (error) {
       console.log(error);
@@ -190,3 +187,81 @@ class UsersConsults {
 }
 
 export const consults_Users = new UsersConsults();
+
+class Boards {
+  async newBoard(data: boards, userid: string) {
+    const consult = `INSERT INTO boards (userid, title, color) VALUES ($1, $2, $3) RETURNING *`;
+    const values = [userid, data.title, data.color || "#E2E8F0"];
+    try {
+      const result = await pool.query(consult, values);
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false, //! posible elminacion
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+
+  async update(data: boards, board_id: string) {
+    const consult = `UPDATE boards SET title = $1, color = $2 where id = $3`;
+    const values = [data.title || null, data.color || null, board_id];
+    try {
+      const result = await pool.query(consult, values);
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false, //! posible elminacion
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+
+  async getBoard(user_id: string, boardId: string) {
+    const consult = `SELECT * FROM boards WHERE userid = $1 AND id = $2 `;
+    const values = [user_id, boardId];
+    try {
+      const result = await pool.query(consult, values);
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false, //! posible elminacion
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+
+  // console.log(`(*/ω＼*)/==|==> ${JSON.stringify(result.rows)}`);
+  async getAllBoard(user_id: string) {
+    const consult = `SELECT * FROM boards WHERE userid = $1`;
+    try {
+      const result = await pool.query(consult, [user_id]);
+      return result.rows;
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false, //! posible elminacion
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+
+  async delete(board_id: string, user_id: string) {
+    const consult = `DELETE FROM boards WHERE id = $1 AND userid = $2`;
+    try {
+      await pool.query(consult, [board_id, user_id]);
+      return { ok: true };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false, //! posible elminacion
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+}
+
+export const consults_Boards = new Boards();

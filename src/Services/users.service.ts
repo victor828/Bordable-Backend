@@ -1,5 +1,5 @@
 import { consults_Users } from "../Consult/consults";
-import { user } from "../Models/users.models";
+import { user } from "../Models/models";
 
 class Users {
   async newUser(data: user) {

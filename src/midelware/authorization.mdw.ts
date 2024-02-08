@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 // import { userService } from "../Services/users.service";
 import { ApiError } from "./error";
-import { user } from "../Models/users.models";
+import { user } from "../Models/models";
 // import { userService } from "../Services/users.service";
 
 export function authorize(...allowedRoles: user["role"][]) {
