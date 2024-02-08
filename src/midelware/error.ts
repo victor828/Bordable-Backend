@@ -17,3 +17,5 @@ export class ApiError extends Error {
     };
   }
 }
+
+export const errorMessage = `"┗|｀O′|┛ |┬┴┬┴┤(･_├┬┴┬┴|`;
