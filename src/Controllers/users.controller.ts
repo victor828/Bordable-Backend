@@ -10,6 +10,14 @@ class Users {
       : res.status(400).json({ data: result.data });
   }
 
+  async update_User(req: Request, res: Response) {
+    const { body, userId: user_id } = req;
+    const result = await service_User.update_User(body, user_id);
+    return result.ok
+      ? res.status(200).json({ data: result.data })
+      : res.status(400).json({ data: result.data });
+  }
+
   async getUser(req: Request, res: Response) {
     const user_id = req.userId;
     const result = await service_User.getUser(user_id);
