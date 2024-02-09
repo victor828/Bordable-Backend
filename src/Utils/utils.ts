@@ -20,3 +20,11 @@ console.log(query);
 // tendremos que agregar un if en dado caso de que pasemos password para que le haga el hashed con bcrypt
 
 // aun que la contrase;a se encriptaria en cunato entresmoa a la funcion de la consulta
+
+export function debugJson(data: any) {
+  console.log(`┗|｀O′|┛ ┻━┻   |$┬┴┬┴┤(･_├┬┴┬┴| ${JSON.stringify(data)}`);
+}
+
+export function debugData(data: any) {
+  console.log(`┗|｀O′|┛ ┻━┻   |$┬┴┬┴┤(･_├┬┴┬┴| ${data}`);
+}
