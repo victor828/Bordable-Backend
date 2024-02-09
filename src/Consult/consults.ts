@@ -44,9 +44,9 @@ class UsersConsults {
     const consult1 = `UPDATE users SET `;
     const consult2 = updateQuery(data);
 
-    const consult3 = `,updatedat = NOW() 
+    const consult3 = `,updatedate = NOW() 
                    WHERE id = $1 
-                   RETURNING *`;
+                   RETURNING name, email`;
     const consult = consult1 + consult2 + consult3;
     console.log(`----> consulta 😎😎😎🦖🦖🦖🦖${consult}`);
 
@@ -63,18 +63,14 @@ class UsersConsults {
 
   // async updateUser(data: user, id: string) {
   //   const consult = `UPDATE users
-  //                  SET username = $1,
-  //                      email = $2,
-  //                      firstname = $3,
-  //                      lastname = $4,
+  //                  SET email = $1,
+  //                      name = $2,
   //                      updateat = NOW()
-  //                  WHERE id = $5
+  //                  WHERE id = $3
   //                  RETURNING *`;
   //   const values = [
-  //     data.username,
-  //     data.email,
-  //     data.firstname,
-  //     data.lastname,
+  //     data.email || null,
+  //     data.name,
   //     id,
   //   ];
   //   try {
@@ -109,13 +105,14 @@ class UsersConsults {
 
   async newUser(data: user) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
+    //  const temporaryEncryptedPassword = encrypt(data.password);
     const consult = `INSERT INTO users(
       username,
       password,
       role,
       email,
       name      )
-    VALUES($1,$2,$3,$4,$5) RETURNING *`;
+    VALUES($1,$2,$3,$4,$5) RETURNING username, name, email`;
     const values = [
       data.username,
       hashedPassword,
@@ -173,14 +170,15 @@ class UsersConsults {
       } else {
         return {
           ok: false,
-          message: " (●'◡'●)  |┬┴┬┴┤(･_├┬┴┬┴| ",
+          message:
+            " (●'◡'●)  |┬┴┬┴┤(･_├┬┴┬┴| the password or user is not correct ",
         };
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return {
         ok: false,
-        message: " (❁´◡`❁)  |┬┴┬┴┤(･_├┬┴┬┴| " + error,
+        message: " (❁´◡`❁)  |┬┴┬┴┤(･_├┬┴┬┴| the user don't exist ", // + error,
       };
     }
   }
@@ -206,7 +204,7 @@ class Boards {
 
   async update(data: boards, board_id: string) {
     const consult = `UPDATE boards SET title = $1, color = $2 where id = $3`;
-    const values = [data.title || null, data.color || null, board_id];
+    const values = [data.title || null, data.color || "#E2E8F0", board_id];
     try {
       const result = await pool.query(consult, values);
       return result.rows[0];

@@ -20,7 +20,7 @@ exports.up = (pgm) => {
     title: { type: "varchar(255)", notNull: true },
     color: {
       type: "varchar(7)",
-      default: "'#E2E8F0'",
+      default: "#E2E8F0",
       check:
         "\"color\" IN ('#E2E8F0', '#FECACA', '#FED7AA', '#FEF08A', '#D9F99D', '#BFDBFE', '#FBCFE8', '#DDD6FE')",
     },

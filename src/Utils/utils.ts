@@ -8,6 +8,7 @@ export const updateQuery = (data: any) => {
   return query;
 };
 
+//* Tests
 const data1 = { username: "admin", password: "123456" };
 const query = Object.values(data1);
 const query1 = Object.keys(data1);
