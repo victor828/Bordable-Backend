@@ -8,12 +8,19 @@ class Users {
     return result ? { ok: true, data: result } : { ok: false, data: result };
   }
 
+  async update_User(data: user, user_Id: string) {
+    // Updated type declaration
+    const result = await consults_Users.updateUser(data, user_Id);
+    return result ? { ok: true, data: result } : { ok: false, data: result };
+  }
+
   async getUser(user_id: string) {
     const result = await consults_Users.getUser(user_id);
     return result ? { ok: true, data: result } : { ok: false, data: result };
   }
 
   async login(data: user) {
+    
     const result = await consults_Users.login(data);
     return result ? { ok: true, data: result } : { ok: false, data: result };
   }
