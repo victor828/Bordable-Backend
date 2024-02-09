@@ -13,10 +13,10 @@ class Boards {
   async update(req: Request, res: Response) {
     const { body, userId } = req;
     const board_id = req.params["id"];
-    const result = await service_boards.update(body, userId, board_id);
+    const result = await service_boards.update(body, board_id, userId);
     return result.ok
-      ? res.status(200).json({ data: result.data })
-      : res.status(400).json({ data: result.data });
+      ? res.status(200).json({ data: result })
+      : res.status(400).json({ data: result });
   }
   async getBoard(req: Request, res: Response) {
     const { userId } = req;
