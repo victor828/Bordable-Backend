@@ -1,8 +1,8 @@
 import { pool } from "../Db/db";
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-import { boards, user } from "../Models/models";
-import { updateQuery } from "../Utils/utils";
+import { boards, cards, tables, user } from "../Models/models";
+import { debugJson, updateQuery } from "../Utils/utils";
 import { errorMessage } from "../midelware/error";
 // console.log(`(*/ω＼*)/==|==> ${JSON.stringify(data)}`);
 // console.log(`(*/ω＼*)  🦖 ${JSON.stringify(userFromBb)}`);
@@ -111,8 +111,11 @@ class UsersConsults {
       password,
       role,
       email,
-      name      )
-    VALUES($1,$2,$3,$4,$5) RETURNING username, name, email`;
+      name,
+      createdate,
+      updatedate
+      )
+    VALUES($1,$2,$3,$4,$5,NOW(), NOW()) RETURNING username, name, email`;
     const values = [
       data.username,
       hashedPassword,
@@ -159,7 +162,7 @@ class UsersConsults {
         userId: userFromBb.id,
         userRole: userFromBb.role,
       };
-      const token = jwt.sign(payload, jwtSecret, { expiresIn: "20m" });
+      const token = jwt.sign(payload, jwtSecret, { expiresIn: "12h" });
 
       if (checkPassword) {
         const data = {
@@ -188,7 +191,11 @@ export const consults_Users = new UsersConsults();
 
 class Boards {
   async newBoard(data: boards, userid: string) {
-    const consult = `INSERT INTO boards (userid, title, color) VALUES ($1, $2, $3) RETURNING *`;
+    const consult = `
+  INSERT INTO boards (userid, title, color, createdate, updatedate)
+  VALUES ($1, $2, $3, NOW(), NOW())
+  RETURNING *
+`;
     const values = [userid, data.title, data.color || "#E2E8F0"];
     try {
       const result = await pool.query(consult, values);
@@ -203,10 +210,12 @@ class Boards {
   }
 
   async update(data: boards, board_id: string) {
-    const consult = `UPDATE boards SET title = $1, color = $2 where id = $3`;
+    const consult = `UPDATE boards SET title = $1, color = $2, updatedate = NOW() where id = $3 returning *`;
     const values = [data.title || null, data.color || "#E2E8F0", board_id];
     try {
       const result = await pool.query(consult, values);
+      console.log(`(*/ω＼*)/==|==> ┗|｀O′|┛ ${JSON.stringify(result.rows[0])}`);
+
       return result.rows[0];
     } catch (error) {
       console.log(error);
