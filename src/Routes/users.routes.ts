@@ -1,5 +1,5 @@
 import { controller_Users } from "../Controllers/users.controller";
-import { schemaValidation, user, userLogin } from "../Schema/schemas";
+import { schemaValidation, user } from "../Schema/schemas";
 import { authenticateHandler } from "../midelware/authentication.mdw";
 import { authorize } from "../midelware/authorization.mdw";
 
@@ -15,16 +15,24 @@ usersRouter.get(
 );
 
 usersRouter.delete(
-  "/delete",
+  "/delete-user",
   authenticateHandler,
   authorize("user", "admin"),
   controller_Users.deleteUser
 );
 
-usersRouter.post("/login", schemaValidation(userLogin), controller_Users.login);
+usersRouter.post(
+  "/login",
+  //schemaValidation(userLogin),
+  controller_Users.login
+);
+
 usersRouter.post("/signup", schemaValidation(user), controller_Users.newUser);
 
-usersRouter.get(
-  "/#"
+usersRouter.patch(
+  "/account/update",
+  authenticateHandler,
+  authorize("user", "admin"),
+  controller_Users.update_User
   // controller_Users.
 );
