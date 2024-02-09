@@ -21,15 +21,22 @@ boardsRouter.get(
 );
 
 boardsRouter.get(
-  "/get-board/",
+  "/get-board",
   authenticateHandler,
   authorize("user", "admin"),
   controller_Boards.getAllBoard
 );
 
+boardsRouter.get(
+  "/update-board/:id",
+  authenticateHandler,
+  authorize("user", "admin"),
+  controller_Boards.update
+);
+
 boardsRouter.delete(
   "/delete/:id",
   authenticateHandler,
-  authorize("user", "admin")
-  // controller_Boards.deleteUser
+  authorize("user", "admin"),
+  controller_Boards.delete
 );
