@@ -8,12 +8,24 @@ class Boards {
     return result ? { ok: true, data: result } : { ok: false, data: result };
   }
 
-  async update(data: boards, boardid: string) {
+  async update(data: boards, boardid: string, user_id: string) {
     /* // todo: PRocesos
-    si la tabla existe tomare su id para darselo a update de la clase consulta
+    necesito verificar si necesitare mover la url
     */
-    const result = await consults_Boards.update(data, boardid);
-    return result ? { ok: true, data: result } : { ok: false, data: result };
+    try {
+      const exist = await consults_Boards.getBoard(user_id, boardid);
+      if (exist) {
+        const result = await consults_Boards.update(data, boardid);
+        return result
+          ? { ok: true, data: result }
+          : { ok: false, data: result };
+      } else {
+        return { ok: false, message: "Board not found" };
+      }
+    } catch (error) {
+      console.error("Error deleting board:", error);
+      throw new Error("Error deleting board");
+    }
   }
 
   async getBoards(id_user: string) {
