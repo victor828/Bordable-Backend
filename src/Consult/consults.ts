@@ -231,6 +231,8 @@ class Boards {
     const values = [user_id, boardId];
     try {
       const result = await pool.query(consult, values);
+      console.log(`(*/ω＼*)/==|==> 🦖🦖 ${JSON.stringify(result.rows)}`);
+
       return result.rows[0];
     } catch (error) {
       console.log(error);
@@ -272,3 +274,168 @@ class Boards {
 }
 
 export const consults_Boards = new Boards();
+
+class Tables {
+  async newTable(data: tables, board_id: string) {
+    console.log(`(*/ω＼*)/==|==> ${JSON.stringify(data)}`);
+
+    const query = `INSERT INTO tables(boardid, title, createdate, updatedate)
+     values($1,$2, NOW(), NOW()) returning *`;
+    const values = [board_id, data.title];
+    try {
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+
+  async getAllTables(id_board: string) {
+    const consult = `SELECT t.*, c.* 
+    FROM tables t 
+    LEFT JOIN cards c 
+    ON t.id = c.tableid 
+    WHERE t.boardid = $1`;
+    const values = [id_board];
+    const result = await pool.query(consult, values);
+    return result.rows;
+  }
+
+  async getTables(id_board: string, id_table: string) {
+    const consult = `select t.*, c.* from tables as t left join cards as c on t.id = c.tableid where t.boardid = $1 and t.id = $2`;
+    const values = [id_board, id_table];
+    const result = await pool.query(consult, values);
+    return result.rows[0];
+  }
+
+  async updateTable(data: tables, table_id: string, board_id: string) {
+    const query = `UPDATE tables SET title = $1, updatedate = NOW() where id = $2 returning *`;
+    const values = [data.title, table_id];
+    try {
+      const result = await pool.query(query, values);
+      {
+        ` update ${debugJson(result.rows)}`;
+      }
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+
+  async deleteTable(table_id: string) {
+    const query = `DELETE FROM tables WHERE id = $1`;
+    const values = [table_id];
+    try {
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+}
+
+export const consult_Tables = new Tables();
+
+class Cards {
+  async newCard(data: cards, table_id: string) {
+    const query = `INSERT INTO cards(tableid, title, createdate, updatedate)
+     values($1,$2, NOW(), NOW()) returning *`;
+    const values = [table_id, data.title];
+    try {
+      const result = await pool.query(query, values);
+      return result.rows[0];
+      debugJson(result.rows);
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+
+  async getCards() {
+    const query = `SELECT * FROM cards`;
+    try {
+      const result = await pool.query(query);
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+
+  async getCard(card_id: string, table_id: string) {
+    const query = `SELECT * FROM cards where id = $1 AND tableid = $2`;
+    try {
+      const result = await pool.query(query, [card_id, table_id]);
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+
+  async update(data: cards, card_id: string) {
+    const query = `UPDATE cards SET title = $1, updatedate = NOW() 
+    where id = $2 returning *`;
+    const values = [data.title, card_id];
+    try {
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+
+  async delete(card_id: string) {
+    const query = `DELETE FROM cards WHERE id = $1`;
+    const values = [card_id];
+    try {
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        message: `${errorMessage}  Error: ` + error,
+      };
+    }
+  }
+}
+
+export const consult_Cards = new Cards();
+
+export async function getFullBoard(board_id: string) {
+  const consult = `SELECT t.*, c.* 
+  FROM boards b
+  LEFT JOIN tables t 
+  ON b.id = t.boardid 
+  LEFT JOIN cards c
+  ON t.id = c.tableid
+  WHERE b.id = $1`;
+  const result = await pool.query(consult, [board_id]);
+  return result.rows;
+}
