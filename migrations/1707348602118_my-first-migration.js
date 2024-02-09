@@ -10,13 +10,18 @@ exports.up = (pgm) => {
       default: "'admin'",
       check: "\"role\" IN ('user', 'admin')",
     },
-    createdate: { type: "timestamp", default: pgm.func("current_timestamp") },
-    updatedate: { type: "timestamp", default: pgm.func("current_timestamp") },
+    createdate: { type: "timestamp" },
+    updatedate: { type: "timestamp" },
   });
 
   pgm.createTable("boards", {
     id: { type: "serial", primaryKey: true },
-    userid: { type: "integer" },
+    userid: {
+      type: "integer",
+      references: '"users"',
+      notNull: true,
+      onDelete: "CASCADE",
+    },
     title: { type: "varchar(255)", notNull: true },
     color: {
       type: "varchar(7)",
@@ -24,19 +29,18 @@ exports.up = (pgm) => {
       check:
         "\"color\" IN ('#E2E8F0', '#FECACA', '#FED7AA', '#FEF08A', '#D9F99D', '#BFDBFE', '#FBCFE8', '#DDD6FE')",
     },
-    createdate: { type: "timestamp", default: pgm.func("current_timestamp") },
-    updatedate: { type: "timestamp", default: pgm.func("current_timestamp") },
+    createdate: { type: "timestamp" },
+    updatedate: { type: "timestamp" },
     position: { type: "integer" },
   });
 
   pgm.createTable("tables", {
     id: { type: "serial", primaryKey: true },
-    boardid: { type: "integer" },
     title: { type: "varchar(50)", notNull: true },
-    createdate: { type: "timestamp", default: pgm.func("current_timestamp") },
-    updatedate: { type: "timestamp", default: pgm.func("current_timestamp") },
+    createdate: { type: "timestamp" },
+    updatedate: { type: "timestamp" },
     position: { type: "integer" },
-    boardid_fk: {
+    boardid: {
       type: "integer",
       references: '"boards"',
       notNull: false,
@@ -46,12 +50,11 @@ exports.up = (pgm) => {
 
   pgm.createTable("cards", {
     id: { type: "serial", primaryKey: true },
-    tableid: { type: "integer" },
     title: { type: "varchar(200)", notNull: true },
-    createdate: { type: "timestamp", default: pgm.func("current_timestamp") },
-    updatedate: { type: "timestamp", default: pgm.func("current_timestamp") },
+    createdate: { type: "timestamp" },
+    updatedate: { type: "timestamp" },
     position: { type: "integer" },
-    tableid_fk: {
+    tableid: {
       type: "integer",
       references: '"tables"',
       notNull: false,
