@@ -21,13 +21,13 @@ boardsRouter.get(
 );
 
 boardsRouter.get(
-  "/get-board",
+  "/board",
   authenticateHandler,
   authorize("user", "admin"),
   controller_Boards.getAllBoard
 );
 
-boardsRouter.get(
+boardsRouter.patch(
   "/update-board/:id",
   authenticateHandler,
   authorize("user", "admin"),
@@ -35,8 +35,10 @@ boardsRouter.get(
 );
 
 boardsRouter.delete(
-  "/delete/:id",
+  "/delete-board/:id",
   authenticateHandler,
   authorize("user", "admin"),
   controller_Boards.delete
 );
+
+// TODO: falta teste la actualizacion de las tables y agregar la base de datos de las cards
