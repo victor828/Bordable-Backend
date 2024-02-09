@@ -12,7 +12,8 @@ class Boards {
 
   async update(req: Request, res: Response) {
     const { body, userId } = req;
-    const result = await service_boards.update(body, userId);
+    const board_id = req.params["id"];
+    const result = await service_boards.update(body, userId, board_id);
     return result.ok
       ? res.status(200).json({ data: result.data })
       : res.status(400).json({ data: result.data });
@@ -37,7 +38,6 @@ class Boards {
   async delete(req: Request, res: Response) {
     const { userId } = req;
     const boardId = req.params["id"];
-
     const result = await service_boards.delete(boardId, userId);
     return result.ok
       ? res.status(200).json({ data: result })
