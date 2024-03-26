@@ -2,11 +2,8 @@ import { pool } from "../Db/db";
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 import { boards, cards, tables, user } from "../Models/models";
-import { debugJson, updateQuery } from "../Utils/utils";
+import { updateQuery } from "../Utils/utils";
 import { errorMessage } from "../midelware/error";
-// console.log(`(*/ω＼*)/==|==> ${JSON.stringify(data)}`);
-// console.log(`(*/ω＼*)  🦖 ${JSON.stringify(userFromBb)}`);
-// const jwtSecret = "5uper53cr3t";
 const jwtSecret = process.env["JWTSECRET"];
 
 class UsersConsults {
@@ -48,8 +45,6 @@ class UsersConsults {
                    WHERE id = $1 
                    RETURNING name, email`;
     const consult = consult1 + consult2 + consult3;
-    // console.log(`----> consulta 😎😎😎🦖🦖🦖🦖${consult}`);
-
     try {
       const response = await pool.query(consult, [id]);
       return response.rows;
@@ -60,34 +55,6 @@ class UsersConsults {
       };
     }
   }
-
-  // async updateUser(data: user, id: string) {
-  //   const consult = `UPDATE users
-  //                  SET email = $1,
-  //                      name = $2,
-  //                      updateat = NOW()
-  //                  WHERE id = $3
-  //                  RETURNING *`;
-  //   const values = [
-  //     data.email || null,
-  //     data.name,
-  //     id,
-  //   ];
-  //   try {
-  //     const response = await pool.query(consult, values);
-  //     return response.rows;
-  //   } catch (error) {
-  //     console.error(error);
-  //     return {
-  //       message: error,
-  //     };
-  //   }
-  // }
-
-  // async deleteUser (id: string) {
-  //   const consult = `DELETE FROM users WHERE id = $1`;
-  //   await pool.query(consult, [id]);
-  // }
 
   async getUserByName(user: string) {
     const consult = `SELECT * FROM users WHERE username = $1`;
@@ -105,7 +72,6 @@ class UsersConsults {
 
   async newUser(data: user) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
-    //  const temporaryEncryptedPassword = encrypt(data.password);
     const consult = `INSERT INTO users(
       username,
       password,
@@ -120,12 +86,11 @@ class UsersConsults {
       data.username,
       hashedPassword,
       data.role || "user",
-      data.email, // podria encriptar tambien el correo por una mayor seguridad anti hackin
+      data.email,
       data.name,
     ];
     try {
       const res = await pool.query(consult, values);
-
       return res.rows[0];
     } catch (error) {
       console.log(error);
@@ -178,7 +143,7 @@ class UsersConsults {
         };
       }
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       return {
         ok: false,
         message:
@@ -215,8 +180,6 @@ class Boards {
     const values = [data.title || null, data.color || "#E2E8F0", board_id];
     try {
       const result = await pool.query(consult, values);
-      // console.log(`(*/ω＼*)/==|==> ┗|｀O′|┛ ${JSON.stringify(result.rows[0])}`);
-
       return result.rows[0];
     } catch (error) {
       console.log(error);
@@ -232,8 +195,6 @@ class Boards {
     const values = [user_id, boardId];
     try {
       const result = await pool.query(consult, values);
-      `(*/ω＼*)/==|==> 🦖🦖 ${JSON.stringify(result.rows)}`;
-
       return result.rows[0];
     } catch (error) {
       console.log(error);
@@ -244,7 +205,6 @@ class Boards {
     }
   }
 
-  // console.log(`(*/ω＼*)/==|==> ${JSON.stringify(result.rows)}`);
   async getAllBoard(user_id: string) {
     const consult = `SELECT * FROM boards WHERE userid = $1`;
     try {
@@ -278,8 +238,6 @@ export const consults_Boards = new Boards();
 
 class Tables {
   async newTable(data: tables, board_id: string) {
-    // console.log(`(*/ω＼*)/==|==> ${JSON.stringify(data)}`);
-
     const query = `INSERT INTO tables(boardid, title, createdate, updatedate)
      values($1,$2, NOW(), NOW()) returning *`;
     const values = [board_id, data.title];
@@ -303,14 +261,12 @@ on t.id = c.tableid
 where t.boardid = $1
 group by t.id
 `;
-    // const consult = `SELECT * FROM tables WHERE boardid = $1`;
     const values = [id_board];
     const result = await pool.query(consult, values);
     return result.rows;
   }
 
   async getTables(id_board: string, id_table: string) {
-    // const consult = `select t.*, c.* from tables as t left join cards as c on t.id = c.tableid where t.boardid = $1 and t.id = $2`;
     const consult = `SELECT *  from tables where boardid = $1 and id = $2`;
     const values = [id_board, id_table];
     const result = await pool.query(consult, values);
@@ -322,9 +278,6 @@ group by t.id
     const values = [data.title, table_id, board_id];
     try {
       const result = await pool.query(query, values);
-      {
-        ` update ${debugJson(result.rows)}`;
-      }
       return result.rows[0];
     } catch (error) {
       console.log(error);
@@ -361,7 +314,6 @@ class Cards {
     try {
       const result = await pool.query(query, values);
       return result.rows[0];
-      debugJson(result.rows);
     } catch (error) {
       console.log(error);
       return {
@@ -373,11 +325,6 @@ class Cards {
 
   async getCard(id_carad: string, id_table: string) {
     const query = `SELECT * FROM cards where id = $1 AND tableid = $2`;
-    // const query = `SELECT t.boardid, c.*
-    // FROM tables t
-    // Inner JOIN cards c
-    // ON t.id = c.tableid
-    // WHERE t.boardid = $1`;
     try {
       const result = await pool.query(query, [id_carad, id_table]);
       return result.rows[0];
@@ -392,11 +339,6 @@ class Cards {
 
   async getAllCard(id_carad: string, id_table: string) {
     const query = `SELECT * FROM cards tableid = $2`;
-    // const query = `SELECT t.boardid, c.*
-    // FROM tables t
-    // Inner JOIN cards c
-    // ON t.id = c.tableid
-    // WHERE t.boardid = $1`;
     try {
       const result = await pool.query(query, [id_carad, id_table]);
       return result.rows[0];
@@ -410,14 +352,13 @@ class Cards {
   }
 
   async getCardsTable(user_id: string) {
-    // const query = `SELECT * FROM cards where tableid = $1`;
     const query = `SELECT b.userid, c.*  
-FROM tables as t 
-left join boards as b
-on t.boardid = b.id
-right join cards as c
-on t.id = c.tableid
-WHERE b.userid = $1`;
+      FROM tables as t 
+      left join boards as b
+      on t.boardid = b.id
+      right join cards as c
+      on t.id = c.tableid
+      WHERE b.userid = $1`;
     try {
       const result = await pool.query(query, [user_id]);
       return result.rows;
@@ -479,17 +420,11 @@ WHERE b.userid = $1`;
     card_id: string,
     table_id: string,
   ) {
-    console.log("3 "+ card_id , table_id);
-    
     const query = `UPDATE cards SET tableid = $1 where id = $2 `
     const result = await pool.query(query, [table_id, card_id]);
-    console.log("4 "+ JSON.stringify(result));
-    
     return result.rows[0];
-  
   }
 }
-
   export const consult_Cards = new Cards();
   
 
@@ -501,14 +436,6 @@ export async function getFullBoard(board_id: string) {
   LEFT JOIN cards c
     on t.id = c.tableid
   where t.boardid = $1`;
-  // const consult = `SELECT t.*, c.*
-  // FROM tables  t
-  // LEFT JOIN cards c
-  // ON t.id = c.tableid
-  // FROM tables t
-  // LEFT JOIN cards c
-  // ON t = c.tableid
-
   const result = await pool.query(consult, [board_id]);
   return result.rows;
 }
