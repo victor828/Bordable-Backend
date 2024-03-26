@@ -3,13 +3,13 @@ import { user } from "../Models/models";
 
 class Users {
   async newUser(data: user) {
-    // Updated type declaration
+
     const result = await consults_Users.newUser(data);
     return result ? { ok: true, data: result } : { ok: false, data: result };
   }
 
   async update_User(data: user, user_Id: string) {
-    // Updated type declaration
+
     const result = await consults_Users.updateUser(data, user_Id);
     return result ? { ok: true, data: result } : { ok: false, data: result };
   }
