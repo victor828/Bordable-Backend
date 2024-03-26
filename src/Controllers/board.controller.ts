@@ -6,13 +6,14 @@ class Boards {
     const { body, userId } = req;
     const result = await service_boards.newBoard(body, userId);
     return result.ok
-      ? res.status(200).json({ data: result.data })
-      : res.status(400).json({ data: result.data });
+      ? res.status(200).json(result.data)
+      : res.status(400).json(result.data);
   }
 
   async update(req: Request, res: Response) {
     const { body, userId } = req;
     const board_id = req.params["id"];
+    // const { authorization } = req.headers;
     const result = await service_boards.update(body, board_id, userId);
     return result.ok
       ? res.status(200).json({ data: result })
@@ -23,16 +24,17 @@ class Boards {
     const boardId = req.params["id"];
     const result = await service_boards.getBoard(userId, boardId);
     return result.ok
-      ? res.status(200).json({ data: result.data })
-      : res.status(400).json({ data: result.data });
+      ? res.status(200).json(result.data)
+      : res.status(400).json(result.data);
   }
 
   async getAllBoard(req: Request, res: Response) {
     const { userId } = req;
+    // const token = req.get("Authorization");
     const result = await service_boards.getBoards(userId);
     return result.ok
-      ? res.status(200).json({ data: result.data })
-      : res.status(400).json({ data: result.data });
+      ? res.status(200).json(result.data)
+      : res.status(400).json(result.data);
   }
 
   async delete(req: Request, res: Response) {
