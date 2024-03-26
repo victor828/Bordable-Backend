@@ -33,12 +33,15 @@ export function authenticateHandler(
       exp: number;
     };
 
-    console.log("desde el midelware --> ", payload);
+    // console.log("desde el midelware --> ", payload);
 
     req.userId = payload.userId;
     req.userRole = payload.userRole;
     next();
   } catch (error) {
-    return next(new ApiError("No autorizado", 401));
+    // return next(new ApiError("No autorizado", 401));
+    return _res.status(401).json({
+      message: "No autorizado",
+    });
   }
 }
