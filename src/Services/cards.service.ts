@@ -4,9 +4,12 @@ class cards {
   async newCard(data: any, id_table: string) {
     // todo: tanto el board debe pertencerle al usuario, si le pertenece entontonces la tabla con el id de la board le pertenece
     const result = await consult_Cards.newCard(data, id_table);
-    return result
-      ? { ok: true, message: result }
-      : { ok: false, message: result };
+    return result ? { ok: true, data: result } : { ok: false, data: result };
+  }
+
+  async getAllCards(user_id: string) {
+    const result = await consult_Cards.getCardsTable(user_id);
+    return result ? { ok: true, data: result } : { ok: false, data: result };
   }
 
   async updateCard(
@@ -37,6 +40,16 @@ class cards {
         message: "An error occurred while deleting the card",
       };
     }
+  }
+
+  async dragAndDrop(id_card: string, id_table: string) {
+    console.log("2: " + id_card, id_table);
+    const result = await consult_Cards.dragAndDrop(id_card, id_table);
+    console.log(result);
+    
+    if (!result) return { ok: false, message: "the drop was not successful" };
+    return result ? { ok: true, data: result } : { ok: false, data: result };
+    
   }
 }
 export const service_Cards = new cards();

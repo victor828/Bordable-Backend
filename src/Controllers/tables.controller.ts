@@ -7,17 +7,14 @@ class Tables {
     const idBoard = req.params["id_board"];
     const { body } = req;
     const result = await service_Tables.newTable(body, idBoard);
-    return result
-      ? res.status(200).json({ result })
-      : res.status(400).json({ result });
+    return result ? res.status(200).json(result) : res.status(400).json(result);
   }
 
   async getAllTables(req: Request, res: Response) {
     const { id_board } = req.params;
     const result = await service_Tables.getAllTables(id_board);
-    return result
-      ? res.status(200).json({ result })
-      : res.status(400).json({ result });
+    // const result = await getFullBoard(id_board);
+    return result ? res.status(200).json(result) : res.status(400).json(result);
   }
 
   async update(req: Request, res: Response) {

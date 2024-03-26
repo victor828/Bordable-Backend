@@ -2,10 +2,9 @@ import { controller_Cards } from "../Controllers/cards.controller";
 import { authenticateHandler } from "../midelware/authentication.mdw";
 import { authorize } from "../midelware/authorization.mdw";
 
-const express = require("express");
+const express = require ("express");
 export const cardRouter = express.Router();
 
-//* create new board
 cardRouter.post(
   "/board/:id_board/table/:id_table/new-card",
   // schemaValidation(Card)
@@ -15,10 +14,10 @@ cardRouter.post(
 );
 
 cardRouter.get(
-  "/board/:id_board",
+  "/board/table/card/",
   authenticateHandler,
-  authorize("user", "admin")
-  // controller_Cards.getAllCards
+  authorize("user", "admin"),
+  controller_Cards.getAllCards
 );
 
 cardRouter.patch(
@@ -28,13 +27,17 @@ cardRouter.patch(
   controller_Cards.updateCard
 );
 
-//* delete board)
-
 cardRouter.delete(
   "/board/:id_board/table/:id_table/card/:id_card",
   authenticateHandler,
   authorize("user", "admin"),
   controller_Cards.delete
 );
-
-//* service
+  
+// api drag & drop
+  cardRouter.patch(
+    "/card/:id_card/new-table/:idTable",
+    authenticateHandler,
+    authorize("user", "admin"),
+    controller_Cards.dragAndDrop
+  );
