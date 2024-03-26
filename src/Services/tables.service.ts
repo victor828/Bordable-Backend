@@ -1,4 +1,4 @@
-import { consult_Tables, getFullBoard } from "../Consult/consults";
+import { consult_Tables } from "../Consult/consults";
 import { tables } from "../Models/models";
 import { debugData, debugJson } from "../Utils/utils";
 import { errorMessage } from "../midelware/error";
@@ -11,7 +11,7 @@ class Table {
   }
 
   async getAllTables(id_board: string) {
-    const result = await getFullBoard(id_board);
+    const result = await consult_Tables.getAllTables(id_board);
     return result ? { ok: true, data: result } : { ok: false, data: result };
   }
 
@@ -27,7 +27,7 @@ class Table {
     }
     debugData(errorMessage + "update");
     debugJson(exist);
-    const result = await consult_Tables.updateTable(body, id_board, userId);
+    const result = await consult_Tables.updateTable(body, id_table, id_board);
     return result ? { ok: true, data: result } : { ok: false, data: result };
   }
 
