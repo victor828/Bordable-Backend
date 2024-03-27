@@ -49,9 +49,7 @@ class Cards {
   }
 
   async dragAndDrop(req: Request, res: Response) {
-      const { id_card, idTable } = req.params;
-      console.log(id_card, idTable); //49  22
-      
+      const { id_card, idTable } = req.params;      
       const result = await service_Cards.dragAndDrop(id_card, idTable)
       return result
         ? res.status(200).json(result.message)

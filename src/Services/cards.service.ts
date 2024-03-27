@@ -43,9 +43,7 @@ class cards {
   }
 
   async dragAndDrop(id_card: string, id_table: string) {
-    console.log("2: " + id_card, id_table);
     const result = await consult_Cards.dragAndDrop(id_card, id_table);
-    console.log(result);
     
     if (!result) return { ok: false, message: "the drop was not successful" };
     return result ? { ok: true, data: result } : { ok: false, data: result };
