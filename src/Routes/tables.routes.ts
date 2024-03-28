@@ -16,7 +16,7 @@ tablesRouter.post(
 );
 
 tablesRouter.get(
-  "/board/:id_board",
+  "/allboard/:id_board",
   authenticateHandler,
   authorize("user", "admin"),
   controller_Tables.getAllTables

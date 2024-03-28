@@ -30,8 +30,9 @@ class Boards {
 
   async getAllBoard(req: Request, res: Response) {
     const { userId } = req;
+    const {sort} = req.params
     // const token = req.get("Authorization");
-    const result = await service_boards.getBoards(userId);
+    const result = await service_boards.getBoards(userId, sort);
     return result.ok
       ? res.status(200).json(result.data)
       : res.status(400).json(result.data);

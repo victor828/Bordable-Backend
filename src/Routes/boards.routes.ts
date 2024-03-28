@@ -21,7 +21,7 @@ boardsRouter.get(
 );
 
 boardsRouter.get(
-  "/board",
+  "/board/:sort",
   authenticateHandler,
   authorize("user", "admin"),
   controller_Boards.getAllBoard
@@ -41,4 +41,3 @@ boardsRouter.delete(
   controller_Boards.delete
 );
 
-// TODO: falta teste la actualizacion de las tables y agregar la base de datos de las cards

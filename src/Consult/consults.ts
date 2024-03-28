@@ -205,10 +205,18 @@ class Boards {
     }
   }
 
-  async getAllBoard(user_id: string) {
-    const consult = `SELECT * FROM boards WHERE userid = $1`;
+  async getAllBoard(user_id: string, sort: string) {
+    const validSortColumns = ['title', 'createdate'];
+    
     try {
-      const result = await pool.query(consult, [user_id]);
+    if (!validSortColumns.includes(sort)) {
+      throw new Error('Invalid sort column '+ sort);
+    }
+    const consult = `SELECT * FROM boards 
+                      WHERE userid = $1
+                      order by ${sort}`;
+    const value = [user_id]
+      const result = await pool.query(consult, value);
       return result.rows;
     } catch (error) {
       console.log(error);

@@ -28,8 +28,8 @@ class Boards {
     }
   }
 
-  async getBoards(id_user: string) {
-    const result = await consults_Boards.getAllBoard(id_user);
+  async getBoards(id_user: string, sort:string) {
+    const result = await consults_Boards.getAllBoard(id_user, sort);
     return result ? { ok: true, data: result } : { ok: false, data: result };
   }
 
@@ -54,23 +54,5 @@ class Boards {
       throw new Error("Error deleting board");
     }
   }
-
-  // // todo:
-  // async getUser(user_id: string) {
-  //   const result = await consults_Users.getUser(user_id);
-  //   return result ? { ok: true, data: result } : { ok: false, data: result };
-  // }
-
-  // // todo:
-  // async login(data: user) {
-  //   const result = await consults_Users.login(data);
-  //   return result ? { ok: true, data: result } : { ok: false, data: result };
-  // }
-
-  // // todo:
-  // async delete(userId: string) {
-  //   await consults_Users.deleteUser(userId);
-  //   return { ok: true, mesage: `User has Deleted` };
-  // }
 }
 export const service_boards = new Boards();
