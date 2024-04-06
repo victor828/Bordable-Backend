@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node build/index.js",
+    "start": "node public/index.js",
     "test": "vitest",
     "migrate": "node-pg-migrate"
   },

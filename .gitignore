@@ -1,6 +1,6 @@
 # carpetas
 node_modules
-build
+public
 
 # Documentos
 .env

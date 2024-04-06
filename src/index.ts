@@ -9,8 +9,13 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env["PORT"] || 0;
 
+const corsOptions = {
+  origin: process.env["CLIENT_ORIGIN"], 
+  optionSuccessStatus: 200,
+}
+
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use("", usersRouter);
 app.use("", boardsRouter);
