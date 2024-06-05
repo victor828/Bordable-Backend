@@ -61,6 +61,11 @@ exports.up = (pgm) => {
       onDelete: "CASCADE",
     },
   });
+
+  pgm.sql(`
+  INSERT INTO users (username, email, password, role)
+  VALUES ('admin', 'admin@mail.com', '$2b$10$ishkX4BqyKxkuuE3N5Z1LeovuMp8XsLzNEaRxBEwya4l9BtClt28O', 'admin');
+`);
 };
 
 exports.down = (pgm) => {
